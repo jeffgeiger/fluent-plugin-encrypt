@@ -29,7 +29,8 @@ module Fluent
 
       @target_keys = @keys + [@key]
       if @target_keys.empty?
-        raise Fluent::ConfigError, "no keys specified to be encrypted"
+        #raise Fluent::ConfigError, "no keys specified to be encrypted"
+        encrypt_it_all = true
       end
 
       algorithm = SUPPORTED_ALGORITHMS[@algorithm]
@@ -57,7 +58,7 @@ module Fluent
       es.each do |time, record|
         r = record.dup
         record.each_pair do |key, value|
-          if @target_keys.include?(key)
+          if @target_keys.include?(key) || encrypt_it_all
             r[key] = encrypt(value)
           end
         end
